@@ -1,0 +1,5 @@
+Startup script for local tmpfs
+
+DESCRIPTION
+Local tmpfs provides infrastructure for third-party information
+beyond memory file system.
