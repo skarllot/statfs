@@ -1,4 +1,4 @@
-# /usr/local/etc/local-tmpfs
+# /usr/local/etc/local-tmpfs.cfg
 
 TMPFS_PATH=/usr/local/var
 FS_SIZE=50m

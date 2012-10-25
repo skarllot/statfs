@@ -17,14 +17,15 @@ RETFAIL="        [ FAIL ]"
 prog=local-tmpfs
 
 
-# Source configuration file
-if [ ! -r $CONF_FILE ]; then
-    echo "The configuration file \"$CONF_FILE\" cannot be found"
-    exit 1
-fi
+checkconf() {
+    # Source configuration file
+    if [ ! -r $CONF_FILE ]; then
+        echo "The configuration file \"$CONF_FILE\" cannot be found"
+        exit 1
+    fi
 
-. $CONF_FILE
-
+    . $CONF_FILE
+}
 
 start() {
     echo -n "Starting $prog: "
@@ -115,15 +116,19 @@ FS_SIZE=50m
 
 case "$1" in
     start)
+        checkconf
         start
         ;;
     stop)
+        checkconf
         stop
         ;;
     restart)
+        checkconf
         restart
         ;;
     status)
+        checkconf
         status
         ;;
     create-config)
