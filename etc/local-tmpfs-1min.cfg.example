@@ -1,0 +1,5 @@
+# /usr/local/etc/local-tmpfs-1min.cfg
+
+# Space separated modules list
+MODULES="example.sh"
+
