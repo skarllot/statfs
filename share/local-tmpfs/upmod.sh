@@ -39,7 +39,7 @@ updatefs() {
         MOD_FILE="${MOD_PATH}/$mod"
 
         if [ -r "$MOD_FILE" ]; then
-            [ ! -z $VERBOSE ] && echo "Updating module $mod..."
+            [ ! $VERBOSE -eq 0 ] && echo "Updating module $mod..."
 
             $MOD_FILE $TMPFS_PATH $VERBOSE
             RETVAL=$?
@@ -48,7 +48,7 @@ updatefs() {
                 echo "Failed to update module $mod"
             fi
         else
-            [ ! -z $VERBOSE ] && echo "Module \"$mod\" cannot be found"
+            [ ! $VERBOSE -eq 0 ] && echo "Module \"$mod\" cannot be found"
         fi
     done
 

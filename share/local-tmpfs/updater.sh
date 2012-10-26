@@ -22,7 +22,7 @@ CRON_CFG=([0]="*/1 * * * *" [1]="*/5 * * * *" [2]="*/15 * * * *" \
 [3]="0 * * * *" [4]="0 0 * * *")
 UPMOD_MODES=([0]="min1" [1]="min5" [2]="min15" [3]="hour" [4]="day")
 TMP_FILE="${SHARE_PATH}/tmp-cron"
-CRON_BLOCK=""
+CRON_BLOCK="# Automatically created by ${SHARE_PATH}/updater.sh"
 
 start() {
     echo -n "Starting $prog: "
@@ -44,6 +44,7 @@ start() {
         fi
 
         CMDRET="${CMDRET}
+
 ${CRON_BLOCK}"
         echo "${CMDRET}" > ${TMP_FILE}
         crontab ${TMP_FILE}
@@ -76,9 +77,9 @@ stop() {
         IFS_COPY=$IFS
         IFS=$'\n'
         for line in $CRON_BLOCK; do
-            CMDRET=$(echo "$CMDRET" | grep -v "$line")
+            CMDRET=$(echo "$CMDRET" | grep -v "${line//\*/\\*}")
         done
-        IFS=IFS_COPY
+        IFS=$IFS_COPY
 
         echo "${CMDRET}" > ${TMP_FILE}
         crontab ${TMP_FILE}
@@ -141,15 +142,21 @@ status() {
     IFS_COPY=$IFS
     IFS=$'\n'
     for line in $CRON_BLOCK; do
-        CMDRET=$(echo "$CRONRET" | grep "$line" | wc -l)
+        CMDRET=$(echo "$CRONRET" | grep "${line//\*/\\*}" | wc -l)
         if [ ! $CMDRET -eq 1 ]; then
             echo "Incorrect configuration found into crontab configuration"
             echo "Try \"$0 force-stop\" to correct this"
+echo "$line"
             RETVAL=3
         fi
     done
-    IFS=IFS_COPY
+    IFS=$IFS_COPY
 
+    if [ ! $RETVAL -eq 0 ]; then
+        echo "$prog is stopped"
+    else
+        echo "$prog is running..."
+    fi
     return $RETVAL
 }
 
