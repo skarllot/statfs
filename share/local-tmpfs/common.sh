@@ -16,6 +16,11 @@ RETOK="        [  OK  ]"
 RETFAIL="        [ FAIL ]"
 
 checkconf() {
+    # Default values
+    TMPFS_PATH=/usr/local/var
+    FS_SIZE=50m
+    MODULES_FAST="example.sh"
+
     # Source configuration file
     if [ ! -r $CONF_FILE ]; then
         echo "The configuration file \"$CONF_FILE\" cannot be found"

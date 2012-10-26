@@ -1,13 +1,13 @@
 #!/bin/bash
 #
-# local-tmpfs   Startup script for local tmpfs
+# manager       Startup script for local tmpfs
 #
 # description:  Local tmpfs provides infrastructure for third-party \
 #               information beyond memory file system.
 # config: /usr/local/etc/local-tmpfs.cfg
 
 MOUNT_FLAGS="rw,nosuid,noexec,nodev,mode=0755"
-AVAIL_FUNC="start|stop|restart|status|create-config"
+AVAIL_FUNC="start|stop|restart|status"
 
 COMMON_FILE="$(dirname $0)/common.sh"
 if [ ! -r $COMMON_FILE ]; then
@@ -18,7 +18,7 @@ fi
 . $COMMON_FILE
 
 
-prog=local-tmpfs
+prog=manager
 
 start() {
     echo -n "Starting $prog: "
@@ -90,26 +90,6 @@ status() {
     return $RETVAL
 }
 
-createconfig() {
-    DEF_CFG="# $CONF_FILE
-
-TMPFS_PATH=/usr/local/var
-FS_SIZE=50m
-
-# Space separated modules list
-MODULES_FAST=\"example.sh\"
-"
-
-    if [ -f $CONF_FILE ]; then
-        echo "Configuration file already exists"
-        RETVAL=1
-    else
-        echo "$DEF_CFG" > $CONF_FILE
-        echo "Configuration file created: $CONF_FILE"
-    fi
-    return $RETVAL
-}
-
 case "$1" in
     start)
         checkconf
@@ -126,9 +106,6 @@ case "$1" in
     status)
         checkconf
         status
-        ;;
-    create-config)
-        createconfig
         ;;
     *)
         echo "$USAGE"
