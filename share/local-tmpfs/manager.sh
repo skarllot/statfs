@@ -7,7 +7,7 @@
 # config: /usr/local/etc/local-tmpfs.cfg
 
 MOUNT_FLAGS="rw,nosuid,noexec,nodev,mode=0755"
-AVAIL_FUNC="start|stop|restart|status"
+USAGE_PARAMS="{start|stop|restart|status}"
 
 COMMON_FILE="$(dirname $0)/common.sh"
 if [ ! -r $COMMON_FILE ]; then

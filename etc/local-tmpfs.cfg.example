@@ -4,4 +4,8 @@ TMPFS_PATH=/usr/local/var
 FS_SIZE=50m
 
 # Space separated modules list
-MODULES_FAST="example.sh"
+MODULES_MIN="example.sh"
+MODULES_5MIN=""
+MODULES_15MIN=""
+MODULES_HOUR=""
+MODULES_DAY=""

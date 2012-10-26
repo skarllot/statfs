@@ -10,7 +10,7 @@ MOD_PATH="${SHARE_PATH}/modules"
 CONF_FILE="${ETC_PATH}/local-tmpfs.cfg"
 LTMPFS_BIN="${SHARE_PATH}/manager.sh"
 
-USAGE="Usage: $0 {$AVAIL_FUNC}"
+USAGE="Usage: $0 $USAGE_PARAMS"
 RETVAL=0
 RETOK="        [  OK  ]"
 RETFAIL="        [ FAIL ]"
@@ -19,7 +19,11 @@ checkconf() {
     # Default values
     TMPFS_PATH=/usr/local/var
     FS_SIZE=50m
-    MODULES_FAST="example.sh"
+    MODULES_MIN="example.sh"
+    MODULES_5MIN=""
+    MODULES_15MIN=""
+    MODULES_HOUR=""
+    MODULES_DAY=""
 
     # Source configuration file
     if [ ! -r $CONF_FILE ]; then

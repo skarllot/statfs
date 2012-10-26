@@ -1,11 +1,11 @@
 #!/bin/bash
 #
-# cron-1min     Updater script for fast modules
+# upmod         Updater script
 #
 # description:  Updater script for fast modules, intended to be \
-#               run minutely by cron.
+#               run by cron.
 
-AVAIL_FUNC="updatefs|verbose-updatefs"
+USAGE_PARAMS="{updatefs|verbose-updatefs} {min1|min5|min15|hour|day}"
 
 COMMON_FILE="$(dirname $0)/common.sh"
 if [ ! -r $COMMON_FILE ]; then
@@ -17,7 +17,7 @@ fi
 
 
 VERBOSE=0
-prog=cron-1min
+prog=upmod
 
 checktmpfs() {
     $LTMPFS_BIN status &> /dev/null
@@ -35,7 +35,7 @@ checktmpfs() {
 }
 
 updatefs() {
-    for mod in $MODULES_FAST; do
+    for mod in $MODULES; do
         MOD_FILE="${MOD_PATH}/$mod"
 
         if [ -r "$MOD_FILE" ]; then
@@ -60,6 +60,27 @@ verboseupdatefs() {
     updatefs
     return $RETVAL
 }
+
+case "$2" in
+    min1)
+        MODULES=$MODULES_MIN
+        ;;
+    min5)
+        MODULES=$MODULES_MIN5
+        ;;
+    min15)
+        MODULES=$MODULES_MIN15
+        ;;
+    hour)
+        MODULES=$MODULES_HOUR
+        ;;
+    day)
+        MODULES=$MODULES_DAY
+        ;;
+    *)
+        echo "$USAGE"
+        RETVAL=2
+esac
 
 case "$1" in
     updatefs)
