@@ -9,6 +9,7 @@ MOD_PATH="${SHARE_PATH}/modules"
 
 CONF_FILE="${ETC_PATH}/local-tmpfs.cfg"
 LTMPFS_BIN="${SHARE_PATH}/manager.sh"
+UPMOD_BIN="${SHARE_PATH}/upmod.sh"
 
 USAGE="Usage: $0 $USAGE_PARAMS"
 RETVAL=0
