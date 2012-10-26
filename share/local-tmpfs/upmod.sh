@@ -2,8 +2,8 @@
 #
 # upmod         Updater script
 #
-# description:  Updater script for fast modules, intended to be \
-#               run by cron.
+# description:  Updater that handles, through modules, update for local \
+#               tmpfs files. This script is intended to be runned via cron.
 
 USAGE_PARAMS="{updatefs|verbose-updatefs} {min1|min5|min15|hour|day}"
 
