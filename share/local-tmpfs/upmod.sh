@@ -61,35 +61,41 @@ verboseupdatefs() {
     return $RETVAL
 }
 
-case "$2" in
-    min1)
-        MODULES=$MODULES_MIN
-        ;;
-    min5)
-        MODULES=$MODULES_MIN5
-        ;;
-    min15)
-        MODULES=$MODULES_MIN15
-        ;;
-    hour)
-        MODULES=$MODULES_HOUR
-        ;;
-    day)
-        MODULES=$MODULES_DAY
-        ;;
-    *)
-        echo "$USAGE"
+checkparam2() {
+    case "$P2" in
+        min1)
+            MODULES=$MODULES_MIN
+            ;;
+        min5)
+            MODULES=$MODULES_MIN5
+            ;;
+        min15)
+            MODULES=$MODULES_MIN15
+            ;;
+        hour)
+            MODULES=$MODULES_HOUR
+            ;;
+        day)
+            MODULES=$MODULES_DAY
+            ;;
+        *)
+            echo "$USAGE"
         RETVAL=2
-esac
+    esac
+    return $RETVAL
+}
 
+P2=$2
 case "$1" in
     updatefs)
         checkconf
+        checkparam2
         checktmpfs
         updatefs
         ;;
     verbose-updatefs)
         checkconf
+        checkparam2
         checktmpfs
         verboseupdatefs
         ;;
