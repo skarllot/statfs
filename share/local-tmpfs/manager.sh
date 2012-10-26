@@ -2,30 +2,23 @@
 #
 # local-tmpfs   Startup script for local tmpfs
 #
-# description: Local tmpfs provides infrastructure for third-party \
-#              information beyond memory file system.
+# description:  Local tmpfs provides infrastructure for third-party \
+#               information beyond memory file system.
 # config: /usr/local/etc/local-tmpfs.cfg
 
-ROOT_PATH="/usr/local"
-CONF_FILE="${ROOT_PATH}/etc/local-tmpfs.cfg"
 MOUNT_FLAGS="rw,nosuid,noexec,nodev,mode=0755"
+AVAIL_FUNC="start|stop|restart|status|create-config"
 
-USAGE="Usage: $0 {start|stop|restart|status|create-config}"
-RETVAL=0
-RETOK="        [  OK  ]"
-RETFAIL="        [ FAIL ]"
+COMMON_FILE="$(dirname $0)/common.sh"
+if [ ! -r $COMMON_FILE ]; then
+    echo "Common script file \"$COMMON_FILE\" cannot be found"
+    exit 1
+fi
+
+. $COMMON_FILE
+
+
 prog=local-tmpfs
-
-
-checkconf() {
-    # Source configuration file
-    if [ ! -r $CONF_FILE ]; then
-        echo "The configuration file \"$CONF_FILE\" cannot be found"
-        exit 1
-    fi
-
-    . $CONF_FILE
-}
 
 start() {
     echo -n "Starting $prog: "
@@ -102,6 +95,9 @@ createconfig() {
 
 TMPFS_PATH=/usr/local/var
 FS_SIZE=50m
+
+# Space separated modules list
+MODULES_FAST=\"example.sh\"
 "
 
     if [ -f $CONF_FILE ]; then

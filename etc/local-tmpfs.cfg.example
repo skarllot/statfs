@@ -2,3 +2,6 @@
 
 TMPFS_PATH=/usr/local/var
 FS_SIZE=50m
+
+# Space separated modules list
+MODULES_FAST="example.sh"

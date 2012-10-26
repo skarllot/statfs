@@ -1,36 +1,23 @@
 #!/bin/bash
+#
+# cron-1min     Updater script for fast modules
+#
+# description:  Updater script for fast modules, intended to be \
+#               run minutely by cron.
 
-ROOT_PATH="/usr/local"
-SHARE_PATH="${ROOT_PATH}/share/local-tmpfs"
-ETC_PATH="${ROOT_PATH}/etc"
-MOD_PATH="${SHARE_PATH}/modules"
-CONF_FILE="${ETC_PATH}/local-tmpfs.cfg"
-MCONF_FILE="${ETC_PATH}/local-tmpfs-1min.cfg"
-LTMPFS_BIN="${SHARE_PATH}/manager.sh"
+AVAIL_FUNC="updatefs|verbose-updatefs"
 
-USAGE="Usage: $0 {updatefs|verbose-updatefs|create-config}"
-RETVAL=0
+COMMON_FILE="$(dirname $0)/common.sh"
+if [ ! -r $COMMON_FILE ]; then
+    echo "Common script file \"$COMMON_FILE\" cannot be found"
+    exit 1
+fi
+
+. $COMMON_FILE
+
+
 VERBOSE=0
-RETOK="        [  OK  ]"
-RETFAIL="        [ FAIL ]"
 prog=cron-1min
-
-checkconf() {
-    # Source configuration file
-    if [ ! -r $CONF_FILE ]; then
-        echo "The configuration file \"$CONF_FILE\" cannot be found"
-        exit 1
-    fi
-
-    . $CONF_FILE
-
-    if [ ! -r $MCONF_FILE ]; then
-        echo "The configuration file \"$MCONF_FILE\" cannot be found"
-        exit 1
-    fi
-
-    . $MCONF_FILE
-}
 
 checktmpfs() {
     $LTMPFS_BIN status &> /dev/null
@@ -48,10 +35,10 @@ checktmpfs() {
 }
 
 updatefs() {
-    for mod in $MODULES; do
-	    MOD_FILE="${MOD_PATH}/$mod"
+    for mod in $MODULES_FAST; do
+        MOD_FILE="${MOD_PATH}/$mod"
 
-    	if [ -r "$MOD_FILE" ]; then
+        if [ -r "$MOD_FILE" ]; then
             [ ! -z $VERBOSE ] && echo "Updating module $mod..."
 
             $MOD_FILE $TMPFS_PATH $VERBOSE
@@ -74,23 +61,6 @@ verboseupdatefs() {
     return $RETVAL
 }
 
-createconfig() {
-    DEF_CFG="# $MCONF_FILE
-
-# Space separated modules list
-MODULES=\"example.sh\"
-"   
-
-    if [ -f $MCONF_FILE ]; then
-        echo "Configuration file already exists"
-        RETVAL=1
-    else 
-        echo "$DEF_CFG" > $MCONF_FILE
-        echo "Configuration file created: $MCONF_FILE"
-    fi
-    return $RETVAL
-}
-
 case "$1" in
     updatefs)
         checkconf
@@ -101,9 +71,6 @@ case "$1" in
         checkconf
         checktmpfs
         verboseupdatefs
-        ;;
-    create-config)
-        createconfig
         ;;
     *)
         echo "$USAGE"
