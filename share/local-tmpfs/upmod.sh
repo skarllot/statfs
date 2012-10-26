@@ -94,7 +94,7 @@ case "$1" in
         verboseupdatefs
         ;;
     *)
-        echo "$USAGE"
+        [ ! $RETVAL -eq 2 ] && echo "$USAGE"
         RETVAL=2
 esac
 
