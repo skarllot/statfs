@@ -1,5 +1,17 @@
-Startup script for local tmpfs
+Local TMPFS
+============
 
-DESCRIPTION
-Local tmpfs provides infrastructure for third-party information
-beyond memory file system.
+Local tmpfs provides infrastructure for third-party information beyond memory
+file system.
+
+How to report bugs
+==================
+
+Bugs should be reported in http://github.com/skarllot/local-tmpfs/issues
+page.
+
+
+Contact
+=======
+
+Fabrício Godoy <skarllot@gmail.com>
