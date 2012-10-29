@@ -43,7 +43,8 @@ readonly CRON_CFG=([0]="*/1 * * * *" [1]="*/5 * * * *" [2]="*/15 * * * *" \
 [3]="0 * * * *" [4]="0 0 * * *")
 readonly UPMOD_MODES=([0]="min1" [1]="min5" [2]="min15" [3]="hour" [4]="day")
 readonly TMP_FILE="${SHARE_PATH}/tmp-cron"
-readonly CRON_BLOCK="# Automatically created by ${SHARE_PATH}/${PROG}"
+readonly CRON_HEADER="# Automatically created by ${SHARE_PATH}/${PROG}"
+CRON_BLOCK=$CRON_HEADER
 
 # --------------------------------------------------------------
 # Functions
@@ -241,7 +242,7 @@ case "$1" in
         checkconf
         start
         ;;
-    unchedule)
+    unschedule)
         checkconf
         stop
         ;;
