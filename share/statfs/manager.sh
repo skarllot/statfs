@@ -40,6 +40,10 @@ fi
 # General config
 readonly MOUNT_FLAGS="rw,nosuid,noexec,nodev,mode=0755"
 
+# --------------------------------------------------------------
+# Functions
+# --------------------------------------------------------------
+
 help() {
     cat <<EOF
 USAGE
@@ -67,7 +71,7 @@ ACTIONS
                 Check if the memory filesystem is attached or not.
 
         . umount
-                Detach the attached memory filesystem
+                Detach the attached memory filesystem.
 
 
 FILES

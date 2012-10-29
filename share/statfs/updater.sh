@@ -1,12 +1,35 @@
 #!/bin/bash
 #
-# updater       Updater manager pseudo-daemon
+# Manager to schedule modules execution.
 #
-# description:  Updater manager allows to control local statfs update \
-#               through pseudo-daemon (via cron).
+# Copyright (C) 2012 Fabrício Godoy <skarllot@gmail.com>
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along
+# with this program; if not, see <http://www.gnu.org/licenses/>.
+#
+# Authors: Fabrício Godoy <skarllot@gmail.com>
+#
 
-USAGE_PARAMS="{start|stop|force-stop|restart|status}"
+# --------------------------------------------------------------
+# Initial setup
+# --------------------------------------------------------------
 
+# Mandatory config for common.sh
+readonly USAGE_PARAMS="{schedule|unschedule|force-unschedule|reschedule\
+|status|help}"
+readonly PROG=updater.sh
+
+# Source common script (common.sh)
 COMMON_FILE="$(dirname $0)/common.sh"
 if [ ! -r $COMMON_FILE ]; then
     echo "Common script file \"$COMMON_FILE\" cannot be found"
@@ -15,24 +38,71 @@ fi
 
 . $COMMON_FILE
 
-
-prog=updater
-
-CRON_CFG=([0]="*/1 * * * *" [1]="*/5 * * * *" [2]="*/15 * * * *" \
+# General config
+readonly CRON_CFG=([0]="*/1 * * * *" [1]="*/5 * * * *" [2]="*/15 * * * *" \
 [3]="0 * * * *" [4]="0 0 * * *")
-UPMOD_MODES=([0]="min1" [1]="min5" [2]="min15" [3]="hour" [4]="day")
-TMP_FILE="${SHARE_PATH}/tmp-cron"
-CRON_BLOCK="# Automatically created by ${SHARE_PATH}/updater.sh"
+readonly UPMOD_MODES=([0]="min1" [1]="min5" [2]="min15" [3]="hour" [4]="day")
+readonly TMP_FILE="${SHARE_PATH}/tmp-cron"
+readonly CRON_BLOCK="# Automatically created by ${SHARE_PATH}/${PROG}"
+
+# --------------------------------------------------------------
+# Functions
+# --------------------------------------------------------------
+
+help() {
+    cat <<EOF
+USAGE
+        $PROG <action>
+
+
+DESCRIPTION
+        $PROG manages scheduling of modules execution.
+
+        After the statfs mounting it will be empty until modules execution.
+        This script schedules modules execution to various execution frequency
+        into root crontab.
+
+
+ACTIONS
+        . force-unschedule
+                Unschedules modules execution from root crontab by removing all
+                references to "upmod.sh", use with care.
+
+        . help
+                Shows this help screen.
+
+        . schedule
+                Schedules modules execution to root crontab.
+
+        . reschedule
+                Unschedules and schedules modules execution.
+
+        . status
+                Check if the modules execution is scheduled or not.
+
+        . unschedule
+                Unschedules modules execution from root crontab.
+
+
+FILES
+        $CONF_FILE: configuration file for statfs
+
+
+VERSION
+        $VERSION
+EOF
+    exit 0
+}
 
 start() {
-    echo -n "Starting $prog: "
+    echo -n "Scheduling modules execution: "
 
     CMDRET=$(status)
     RETVAL=$?
 
     if [ $RETVAL -eq 0 ]; then
         echo "$RETFAIL"
-        echo "$prog is already running"
+        echo "Modules execution is already scheduled"
         RETVAL=1
     else
         CMDRET=$(crontab -l 2> /dev/null)
@@ -61,14 +131,14 @@ ${CRON_BLOCK}"
 }
 
 stop() {
-    echo -n "Stopping $prog: "
+    echo -n "Unscheduling modules execution: "
 
     CMDRET=$(status)
     RETVAL=$?
 
     if [ ! $RETVAL -eq 0 ]; then
         echo "$RETFAIL"
-        echo "$prog is not running"
+        echo "Modules execution is not scheduled"
         RETVAL=1
     else
         CMDRET=$(crontab -l 2> /dev/null)
@@ -96,7 +166,7 @@ stop() {
 }
 
 forcestop() {
-    echo -n "Forcing stop $prog: "
+    echo -n "Forcing unschedule of modules execution: "
 
     CMDRET=$(crontab -l | grep -v "$UPMOD_BIN" 2> /dev/null)
     RETVAL=$?
@@ -135,7 +205,7 @@ status() {
 
     CMDRET=$(echo "$CRONRET" | grep "$UPMOD_BIN" | wc -l)
     if [ $CMDRET -eq 0 ]; then
-        echo "$prog is stopped"
+        echo "Modules execution is not scheduled"
         return 3
     fi
 
@@ -145,40 +215,41 @@ status() {
         CMDRET=$(echo "$CRONRET" | grep "${line//\*/\\*}" | wc -l)
         if [ ! $CMDRET -eq 1 ]; then
             echo "Incorrect configuration found into crontab configuration"
-            echo "Try \"$0 force-stop\" to correct this"
-echo "$line"
+            echo "Try \"$0 force-unschedule\" to correct this"
+
             RETVAL=3
         fi
     done
     IFS=$IFS_COPY
 
     if [ ! $RETVAL -eq 0 ]; then
-        echo "$prog is stopped"
+        echo "Modules execution is not scheduled"
     else
-        echo "$prog is running..."
+        echo "Modules execution is scheduled"
     fi
     return $RETVAL
 }
 
+# Create text string to crontab
 for i in {0..4}; do
     CRON_BLOCK="${CRON_BLOCK}
 ${CRON_CFG[$i]} ${UPMOD_BIN} updatefs ${UPMOD_MODES[$i]}"
 done
 
 case "$1" in
-    start)
+    schedule)
         checkconf
         start
         ;;
-    stop)
+    unchedule)
         checkconf
         stop
         ;;
-    force-stop)
+    force-unschedule)
         checkconf
         forcestop
         ;;
-    restart)
+    reschedule)
         checkconf
         restart
         ;;
@@ -186,9 +257,13 @@ case "$1" in
         checkconf
         status
         ;;
+    help|h|-h|--help)
+        help
+        ;;
     *)
-        echo "$USAGE"
         RETVAL=2
+        usage
 esac
 
 exit $RETVAL
+
