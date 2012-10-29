@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Provides management to memory filesystem mounting.
+# Provides management to stat filesystem mounting.
 #
 # Copyright (C) 2012 Fabrício Godoy <skarllot@gmail.com>
 #
@@ -47,10 +47,10 @@ USAGE
 
 
 DESCRIPTION
-        $PROG provides management to memory filesystem mounting.
+        $PROG provides management to stat filesystem mounting.
 
-        The memory filesystem is the core functionality for local-tmpfs, it
-        will store all third-party information provided by modules.
+        The stat filesystem is backed by tmpfs, it stores all third-party stats
+        provided by modules.
 
 
 ACTIONS
@@ -71,7 +71,7 @@ ACTIONS
 
 
 FILES
-        $CONF_FILE: configuration file for local-tmpfs
+        $CONF_FILE: configuration file for statfs
 
 
 VERSION
@@ -81,23 +81,23 @@ EOF
 }
 
 start() {
-    echo -n "Mounting tmpfs: "
+    echo -n "Mounting statfs: "
 
     status > /dev/null
     RETVAL=$?
 
     if [ $RETVAL -eq 0 ]; then
         echo "$RETFAIL"
-        echo "tmpfs is already mounted"
+        echo "statfs is already mounted"
         RETVAL=1
     else
-        if [ ! -d "$TMPFS_PATH" ]; then
-            mkdir -p "$TMPFS_PATH"
+        if [ ! -d "$STATFS_PATH" ]; then
+            mkdir -p "$STATFS_PATH"
             RETVAL=$?
             [ ! $RETVAL -eq 0 ] && return $RETVAL
         fi
 
-        mount -t tmpfs -o ${MOUNT_FLAGS},size=$FS_SIZE tmpfs $TMPFS_PATH
+        mount -t tmpfs -o ${MOUNT_FLAGS},size=$FS_SIZE tmpfs $STATFS_PATH
         RETVAL=$?
 
         if [ $RETVAL -eq 0 ]; then
@@ -110,17 +110,17 @@ start() {
 }
 
 stop() {
-    echo -n "Unmount tmpfs: "
+    echo -n "Unmount statfs: "
 
     status > /dev/null
     RETVAL=$?
 
     if [ ! $RETVAL -eq 0 ]; then
         echo "$RETFAIL"
-        echo "tmpfs is not mounted"
+        echo "statfs is not mounted"
         RETVAL=1
     else
-        umount $TMPFS_PATH
+        umount $STATFS_PATH
         RETVAL=$?
 
         if [ $RETVAL -eq 0 ]; then
@@ -139,13 +139,13 @@ restart() {
 
 status() {
     CMDRET=$(mount)
-    CMDRET=$(echo "$CMDRET" | grep tmpfs | grep $TMPFS_PATH | wc -l)
+    CMDRET=$(echo "$CMDRET" | grep tmpfs | grep $STATFS_PATH | wc -l)
 
     if [ ! $CMDRET -eq 1 ]; then
-        echo "tmpfs is not mounted"
+        echo "statfs is not mounted"
         RETVAL=3
     else
-        echo "tmpfs is mounted"
+        echo "statfs is mounted"
         RETVAL=0
     fi
 

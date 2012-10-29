@@ -2,7 +2,7 @@
 #
 # updater       Updater manager pseudo-daemon
 #
-# description:  Updater manager allows to control local tmpfs update \
+# description:  Updater manager allows to control local statfs update \
 #               through pseudo-daemon (via cron).
 
 USAGE_PARAMS="{start|stop|force-stop|restart|status}"

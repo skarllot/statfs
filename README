@@ -1,13 +1,13 @@
-Local TMPFS
-============
+STATFS
+======
 
-Local tmpfs provides infrastructure for third-party information beyond memory
-file system.
+STATFS provides infrastructure for third-party stats, provided through modules,
+be easily available for reading from memory file system.
 
 How to report bugs
 ==================
 
-Bugs should be reported in http://github.com/skarllot/local-tmpfs/issues
+Bugs should be reported in http://github.com/skarllot/statfs/issues
 page.
 
 

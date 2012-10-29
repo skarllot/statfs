@@ -2,8 +2,8 @@
 #
 # upmod         Updater script
 #
-# description:  Updater that handles, through modules, update for local \
-#               tmpfs files. This script is intended to be runned via cron.
+# description:  Updater that handles, through modules, update for statfs \
+#               files. This script is intended to be runned via cron.
 
 USAGE_PARAMS="{updatefs|verbose-updatefs} {min1|min5|min15|hour|day}"
 
@@ -19,17 +19,17 @@ fi
 VERBOSE=0
 prog=upmod
 
-checktmpfs() {
-    $LTMPFS_BIN status &> /dev/null
+checkstatfs() {
+    $MANAGER_BIN status &> /dev/null
     RETVAL=$?
 
     if [ ! $RETVAL -eq 0 ]; then
-        $LTMPFS_BIN start &> /dev/null
+        $MANAGER_BIN start &> /dev/null
         RETVAL=$?
     fi
 
     if [ ! $RETVAL -eq 0 ]; then
-        echo "Cannot start \"$LTMPFS_BIN\""
+        echo "Cannot start \"$MANAGER_BIN\""
         exit 1
     fi
 }
@@ -41,7 +41,7 @@ updatefs() {
         if [ -r "$MOD_FILE" ]; then
             [ ! $VERBOSE -eq 0 ] && echo "Updating module $mod..."
 
-            $MOD_FILE $TMPFS_PATH $VERBOSE
+            $MOD_FILE $STATFS_PATH $VERBOSE
             RETVAL=$?
 
             if [ ! -z $VERBOSE ] && [ ! $RETVAL -eq 0 ]; then
@@ -90,13 +90,13 @@ case "$1" in
     updatefs)
         checkconf
         checkparam2
-        checktmpfs
+        checkstatfs
         updatefs
         ;;
     verbose-updatefs)
         checkconf
         checkparam2
-        checktmpfs
+        checkstatfs
         verboseupdatefs
         ;;
     *)

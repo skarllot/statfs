@@ -1,6 +1,6 @@
-# /usr/local/etc/local-tmpfs.cfg
+# /usr/local/etc/statfs.cfg
 
-TMPFS_PATH=/usr/local/var
+STATFS_PATH=/usr/local/stats
 FS_SIZE=50m
 
 # Space separated modules list

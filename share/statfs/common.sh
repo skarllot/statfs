@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Common variables and functions to local-tmpfs
+# Common variables and functions to statfs
 #
 # Copyright (C) 2012 Fabrício Godoy <skarllot@gmail.com>
 #
@@ -24,13 +24,13 @@ readonly VERSION="0.1"
 
 # Default paths
 readonly ROOT_PATH="/usr/local"
-readonly SHARE_PATH="${ROOT_PATH}/share/local-tmpfs"
+readonly SHARE_PATH="${ROOT_PATH}/share/statfs"
 readonly ETC_PATH="${ROOT_PATH}/etc"
 readonly MOD_PATH="${SHARE_PATH}/modules"
 
 # Default files
-readonly CONF_FILE="${ETC_PATH}/local-tmpfs.cfg"
-readonly LTMPFS_BIN="${SHARE_PATH}/manager.sh"
+readonly CONF_FILE="${ETC_PATH}/statfs.cfg"
+readonly MANAGER_BIN="${SHARE_PATH}/manager.sh"
 readonly UPMOD_BIN="${SHARE_PATH}/upmod.sh"
 
 # Messages returns
@@ -39,7 +39,7 @@ readonly RETFAIL="        [ FAIL ]"
 
 # Defaults
 RETVAL=0
-TMPFS_PATH=/usr/local/var
+STATFS_PATH=/usr/local/var
 FS_SIZE=50m
 MODULES_MIN="example.sh"
 MODULES_5MIN=""

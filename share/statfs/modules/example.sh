@@ -1,8 +1,8 @@
 #!/bin/bash
-# example   Example module for local-tmpfs
+# example   Example module for statfs
 #
-# description:  Example module for local-tmpfs
-# param1:       Path for mounted local-tmpfs
+# description:  Example module for statfs
+# param1:       Path for mounted statfs
 # param2:       Verbose mode (0=no | 1=yes)
 
 MOD_NAME=example
