@@ -100,8 +100,8 @@ case "$1" in
         verboseupdatefs
         ;;
     *)
-        [ ! $RETVAL -eq 2 ] && echo "$USAGE"
         RETVAL=2
+        usage
 esac
 
 exit $RETVAL
