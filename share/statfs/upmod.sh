@@ -24,12 +24,12 @@ checkstatfs() {
     RETVAL=$?
 
     if [ ! $RETVAL -eq 0 ]; then
-        $MANAGER_BIN start &> /dev/null
+        $MANAGER_BIN mount &> /dev/null
         RETVAL=$?
     fi
 
     if [ ! $RETVAL -eq 0 ]; then
-        echo "Cannot start \"$MANAGER_BIN\""
+        echo "Error calling \"$MANAGER_BIN mount\""
         exit 1
     fi
 }
@@ -67,10 +67,10 @@ checkparam2() {
             MODULES=$MODULES_MIN
             ;;
         min5)
-            MODULES=$MODULES_MIN5
+            MODULES=$MODULES_5MIN
             ;;
         min15)
-            MODULES=$MODULES_MIN15
+            MODULES=$MODULES_15MIN
             ;;
         hour)
             MODULES=$MODULES_HOUR
@@ -79,8 +79,8 @@ checkparam2() {
             MODULES=$MODULES_DAY
             ;;
         *)
-            echo "$USAGE"
-        RETVAL=2
+            RETVAL=2
+            usage
     esac
     return $RETVAL
 }
