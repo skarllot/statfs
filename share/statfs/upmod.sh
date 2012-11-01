@@ -44,7 +44,7 @@ updatefs() {
             $MOD_FILE $STATFS_PATH $VERBOSE
             RETVAL=$?
 
-            if [ ! -z $VERBOSE ] && [ ! $RETVAL -eq 0 ]; then
+            if [ ! $VERBOSE -eq 0 ] && [ ! $RETVAL -eq 0 ]; then
                 echo "Failed to update module $mod"
             fi
         else
