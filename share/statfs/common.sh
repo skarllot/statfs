@@ -31,6 +31,7 @@ readonly MOD_PATH="${SHARE_PATH}/modules"
 # Default files
 readonly CONF_FILE="${ETC_PATH}/statfs.cfg"
 readonly MANAGER_BIN="${SHARE_PATH}/manager.sh"
+readonly UPDATER_BIN="${SHARE_PATH}/updater.sh"
 readonly UPMOD_BIN="${SHARE_PATH}/upmod.sh"
 
 # Messages returns

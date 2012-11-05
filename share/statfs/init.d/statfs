@@ -1,0 +1,70 @@
+#!/bin/bash
+#
+# chkconfig: 2345 95 5
+# description: Starts and stops the manager and updater from statfs scripts.
+# config: /usr/local/etc/statfs.cfg autoreload
+
+# Mandatory config for common.sh
+readonly USAGE_PARAMS="{start|stop|restart|status}"
+readonly prog=statfs
+
+# Source common script (common.sh)
+readonly _ROOT_PATH="/usr/local"
+readonly _SHARE_PATH="${_ROOT_PATH}/share/statfs"
+readonly COMMON_FILE="${_SHARE_PATH}/common.sh"
+if [ ! -r $COMMON_FILE ]; then
+    echo "Common script file \"$COMMON_FILE\" cannot be found"
+    exit 1
+fi
+
+. $COMMON_FILE
+
+start() {
+	$MANAGER_BIN mount
+	RETVAL=$?
+	$UPDATER_BIN schedule
+	RETVAL2=$?
+	([ $RETVAL -ne 0 ] || [ $RETVAL2 -ne 0 ]) && RETVAL=1
+	return $RETVAL
+}	
+
+stop() {
+	$UPDATER_BIN unschedule
+	RETVAL=$?
+	$MANAGER_BIN umount
+	RETVAL2=$?
+	([ $RETVAL -ne 0 ] || [ $RETVAL2 -ne 0 ]) && RETVAL=1
+	return $RETVAL
+}
+
+status() {
+	$MANAGER_BIN status
+	RETVAL=$?
+	$UPDATER_BIN status
+	RETVAL2=$?
+	([ $RETVAL -ne 0 ] || [ $RETVAL2 -ne 0 ]) && RETVAL=3
+	return $RETVAL
+}
+
+case "$1" in
+    start)
+	start
+	;;
+    stop)
+	stop
+	;;
+    status)
+	status
+	;;
+    restart)
+    	stop
+	start
+	;;
+    *)
+	echo "Usage: $prog $USAGE_PARAMS"
+	exit 1
+	;;
+esac
+
+exit $?
+
