@@ -1,0 +1,51 @@
+#!/bin/bash
+#
+# Read instance value from stat filesystem.
+#
+# Copyright (C) 2012 Fabrício Godoy <skarllot@gmail.com>
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along
+# with this program; if not, see <http://www.gnu.org/licenses/>.
+#
+# Authors: Fabrício Godoy <skarllot@gmail.com>
+#
+
+# Mandatory config for common.sh
+readonly USAGE_PARAMS="<instance>"
+readonly PROG=get-stat
+
+# Source common script (common.sh)
+COMMON_FILE="$(dirname $(dirname $0))/share/statfs/common.sh"
+if [ ! -r $COMMON_FILE ]; then
+    echo "Common script file \"$COMMON_FILE\" cannot be found"
+    exit 1
+fi
+
+. $COMMON_FILE
+
+if [ -z $1 ]; then
+    RETVAL=1
+    usage
+fi
+
+checkconf
+
+INST_FILE="${STATFS_PATH}/${1//.//}"
+
+if [ ! -r $INST_FILE ]; then
+    echo "The instance \"$1\" cannot be found"
+    exit 1
+fi
+
+cat $INST_FILE
+
