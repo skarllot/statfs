@@ -21,42 +21,45 @@
 # Authors: Fabrício Godoy <skarllot@gmail.com>
 #
 
+import os
 import sys
-import os.path
+import re
 
 NAME = "statfs"
 VERSION = "0.2"
 
-# Default paths
-WORK_PATH = "/var/lib/%s" % (NAME)
-SHARE_PATH = "/usr/share/%s" % (NAME)
-PID_PATH = "/var/run/%s" % (NAME)
-ETC_PATH = "/etc"
-MOD_PATH = "%s/modules" % (WORK_PATH)
-STATFS_PATH = "/var/stats"
+SELF_PATH = os.path.dirname(os.path.realpath(__file__))
 
-# Default files
-CONF_FILE = "%s/%s.conf" % (ETC_PATH, NAME)
-D_CONF_FILE = CONF_FILE
-
-if not(os.path.isfile(CONF_FILE)):
-    WORK_PATH = "/usr/local/lib/%s" % (NAME)
-    SHARE_PATH = "/usr/local/share/%s" % (NAME)
-    PID_PATH = "/usr/local/run/%s" % (NAME)
-    ETC_PATH = "/usr/local/etc"
-    MOD_PATH = "%s/modules" % (WORK_PATH)
-    STATFS_PATH = "/usr/local/stats"
+# Default path
+if SELF_PATH == "/usr/share/%s" % (NAME):
+    WORK_PATH = "/var/lib/%s" % (NAME)
+    SHARE_PATH = "/usr/share/%s" % (NAME)
+    PID_PATH = "/var/run/%s" % (NAME)
+    ETC_PATH = "/etc/%s" % (NAME)
+    STATFS_PATH = "/var/stats"
     CONF_FILE = "%s/%s.conf" % (ETC_PATH, NAME)
+# Alternative path
+else:
+    m = re.search(r'(.+)/share/%s' % (NAME), SELF_PATH)
+    if m:
+        ROOT_PATH = m.group(1)
+        WORK_PATH = "%s/lib/%s" % (ROOT_PATH, NAME)
+        SHARE_PATH = "%s/share/%s" % (ROOT_PATH, NAME)
+        PID_PATH = "%s/run/%s" % (ROOT_PATH, NAME)
+        ETC_PATH = "%s/etc/%s" % (ROOT_PATH, NAME)
+        STATFS_PATH = "%s/stats" % (ROOT_PATH)
+        CONF_FILE = "%s/%s.conf" % (ETC_PATH, NAME)
+    else:
+        sys.stderr.write("The file \"%s\" location is unsupported" % __file__)
+        sys.exit(1)
 
+MODS_AVAIL_PATH = "%s/mods-available" % (ETC_PATH)
+MODS_ENABLED_PATH = "%s/mods-enabled" % (ETC_PATH)
 
-if not(os.path.isfile(CONF_FILE)):
-    print("The configuration file \"%s\" cannot be found" % (D_CONF_FILE))
-    sys.exit(1)
-
-FS_TYPE = "50m"
-MODULES = [ [ 60, [ "example.sh" ] ], [ 300, [ ] ], [ 900, [ ] ] ]
+FS_SIZE = "50m"
 
 # FIXME: Configuration file parsing not implemented
-print("Configuration file parsing not implemented")
+if os.path.isfile(CONF_FILE):
+    print("Configuration file parsing not implemented")
 
 # vim: set ts=4 et
