@@ -21,9 +21,14 @@
 # Authors: Fabrício Godoy <skarllot@gmail.com>
 #
 
-import subprocess
-from common import *
+import sys
+import commands
+import common
 
-cmd=('python', 'upmod.py', 'start')
+cmd='python upmod.py start'
+(status, output) = commands.getstatusoutput(cmd)
+if status:
+    sys.stderr.write(output)
+    sys.exit(1)
 
 # vim: set ts=4 et
