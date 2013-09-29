@@ -23,7 +23,7 @@
 
 import sys
 import commands
-import common
+from common import *
 
 cmd='python upmod.py start'
 (status, output) = commands.getstatusoutput(cmd)
