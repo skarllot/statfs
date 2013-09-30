@@ -33,7 +33,7 @@
 import os
 import subprocess
 
-class Colorcodes(object):
+class ColorCodes(object):
     """
     Provides ANSI terminal color codes which are gathered via the ``tput``
     utility. That way, they are portable. Color codes are initialized to 
@@ -74,7 +74,25 @@ class Colorcodes(object):
             self.grey = subprocess.check_output("tput setaf 8".split())
         except subprocess.CalledProcessError as e:
             pass
+        self.fmtDict = { \
+            "b": self.bold, \
+            "u": self.underline, \
+            "r": self.reset, \
+            "blue": self.blue, \
+            "green": self.green, \
+            "orange": self.orange, \
+            "red": self.red, \
+            "purple": self.purple, \
+            "cyan": self.cyan, \
+            "white": self.white, \
+            "grey": self.grey }
 
-_c = Colorcodes()
+    def applyformat(self, s, d2=None):
+        if d2:
+            return s % dict(self.fmtDict.items() + d2.items())
+        else:
+            return s % self.fmtDict
+
+_c = ColorCodes()
 
 # vim: set ts=4 et

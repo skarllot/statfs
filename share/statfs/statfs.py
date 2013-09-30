@@ -25,43 +25,40 @@ import os
 import re
 import sys
 from common import *
-from colorcodes import Colorcodes
+from colorcodes import ColorCodes
 
 PROG = sys.argv[0]
 
 def showHelp():
-    print("""
-[b]USAGE[/]
-        $PROG [u]action[/]
+    help = """
+%(b)sUSAGE%(r)s
+        %(PROG)s %(u)saction%(r)s
 
 
-[b]DESCRIPTION[/]
-        $PROG modules manager.
+%(b)sDESCRIPTION%(r)s
+        %(PROG)s modules manager.
 
         This manager provides useful commands to manage statfs modules.
 
 
-[b]ACTIONS[/]
-        . [b]help[/]
+%(b)sACTIONS%(r)s
+        . %(b)shelp%(r)s
                 Shows this help screen.
 
-        . [b]show-modules[/]
+        . %(b)sshow-modules%(r)s
                 Show all available modules.
 
 
-[b]FILES[/]
-        [b]$CONF_FILE[/]: configuration file for statfs
+%(b)sFILES%(r)s
+        %(b)s%(CONF_FILE)s%(r)s: configuration file for statfs
 
 
-[b]VERSION[/]
-        $VERSION
-""".\
-    replace("$PROG", PROG).\
-    replace("$CONF_FILE", CONF_FILE).\
-    replace("$VERSION", VERSION).\
-    replace("[b]", Colorcodes().bold).\
-    replace("[u]", Colorcodes().underline).\
-    replace("[/]", Colorcodes().reset))
+%(b)sVERSION%(r)s
+        %(VERSION)s
+"""
+    fmt = { "PROG": PROG, "CONF_FILE": CONF_FILE, "VERSION": VERSION }
+    help = ColorCodes().applyformat(help, fmt)
+    print(help)
 
 def availableModules():
     mods = []
@@ -85,10 +82,10 @@ if len(sys.argv) < 2:
 opt = sys.argv[1]
 if opt == "show-modules":
     mods = availableModules()
-    sOut = "Available modules:" + Colorcodes().bold
+    sOut = "Available modules:" + ColorCodes().bold
     for m in mods:
         sOut += " %s" % m
-    print(sOut + Colorcodes().reset)
+    print(sOut + ColorCodes().reset)
 elif opt == "help":
     showHelp()
 else:
