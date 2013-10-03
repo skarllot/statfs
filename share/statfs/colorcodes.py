@@ -77,7 +77,7 @@ class ColorCodes(object):
         self.fmtDict = { \
             "b": self.bold, \
             "u": self.underline, \
-            "r": self.reset, \
+            "/": self.reset, \
             "blue": self.blue, \
             "green": self.green, \
             "orange": self.orange, \
@@ -92,6 +92,12 @@ class ColorCodes(object):
             return s % dict(self.fmtDict.items() + d2.items())
         else:
             return s % self.fmtDict
+
+    def applytags(self, s):
+        sfmt = s
+        for t in self.fmtDict:
+            sfmt = sfmt.replace('[' + t + ']', self.fmtDict[t])
+        return sfmt
 
 _c = ColorCodes()
 
