@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
 # STATFS manager.
@@ -22,7 +22,6 @@
 #
 
 import os
-import re
 import sys
 from common import *
 from colorcodes import ColorCodes
@@ -69,10 +68,10 @@ def availableModules():
             ffull = "%s/%s" % (MODS_AVAIL_PATH, f)
             if os.path.isfile(ffull) \
                 and os.access(ffull, os.X_OK) \
-                and not(re.search(r'~$', f)):
+                and f[-1] != '~':
                 mods.append(f)
     else:
-        sys.stderr.write("Directory \"%s\" does not exist" % MODS_AVAIL_PATH)
+        sys.stderr.write("Directory \"%s\" does not exist\n" % MODS_AVAIL_PATH)
 
     return mods
 
