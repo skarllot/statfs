@@ -34,7 +34,7 @@ def show_dependencies(args):
 def show_name(args):
     print(MOD_NAME)
 
-parser = argparse.ArgumentParser(description="Example module for statfs", formatter_class=lambda prog: argparse.HelpFormatter(prog,max_help_position=80))
+parser = argparse.ArgumentParser(description="Example module for statfs" )
 subparsers = parser.add_subparsers(title="Actions", metavar="")
 
 parser_f = subparsers.add_parser("default-frequency", \
