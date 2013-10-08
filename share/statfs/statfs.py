@@ -21,6 +21,7 @@
 # Authors: Fabrício Godoy <skarllot@gmail.com>
 #
 
+import argparse
 import os
 import sys
 from common import *
@@ -28,32 +29,24 @@ from colorcodes import ColorCodes
 
 PROG = sys.argv[0]
 
-def showHelp():
-    help = """
+def show_help(args):
+    help = """\
 [b]USAGE[/]
-        %(PROG)s [u]action[/]
-
+    %(PROG)s [u]action[/]
 
 [b]DESCRIPTION[/]
-        %(PROG)s modules manager.
-
-        This manager provides useful commands to manage statfs modules.
-
+    %(PROG)s modules manager.
+    This manager provides useful commands to manage statfs modules.
 
 [b]ACTIONS[/]
-        . [b]help[/]
-                Shows this help screen.
-
-        . [b]show-modules[/]
-                Show all available modules.
-
+    [b]help[/]            Show this help message.
+    [b]show-modules[/]    Show all available modules.
 
 [b]FILES[/]
-        [b]%(CONF_FILE)s[/]: configuration file for statfs
-
+    [b]%(CONF_FILE)s[/]: configuration file for statfs
 
 [b]VERSION[/]
-        %(VERSION)s
+    %(VERSION)s\
 """
     fmt = { "PROG": PROG, "CONF_FILE": CONF_FILE, "VERSION": VERSION }
     help = help % fmt
@@ -75,22 +68,24 @@ def availableModules():
 
     return mods
 
-if len(sys.argv) < 2:
-    showHelp()
-    sys.exit(1)
-
-opt = sys.argv[1]
-if opt == "show-modules":
+def show_avail_mods(args):
     mods = availableModules()
     sOut = "Available modules:[b]"
     for m in mods:
         sOut += " %s" % m
     sOut += "[/]"
     print(ColorCodes().applytags(sOut))
-elif opt == "help":
-    showHelp()
-else:
-    showHelp()
-    sys.exit(1)
+
+parser = argparse.ArgumentParser(add_help=False)
+subparsers = parser.add_subparsers(title="Actions", metavar="")
+
+parser_h = subparsers.add_parser("help")
+parser_h.set_defaults(func=show_help)
+
+parser_sm = subparsers.add_parser("show-modules")
+parser_sm.set_defaults(func=show_avail_mods)
+
+args = parser.parse_args()
+args.func(args)
 
 # vim: set ts=4 et
