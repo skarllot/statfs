@@ -22,6 +22,7 @@
 #
 
 import argparse
+import commands
 import os
 import sys
 from common import *
@@ -53,8 +54,8 @@ def show_help(args):
     help = ColorCodes().applytags(help)
     print(help)
 
-def availableModules():
-    mods = []
+def get_available_modules():
+    mods = {}
     if os.path.isdir(MODS_AVAIL_PATH):
         files = os.listdir(MODS_AVAIL_PATH)
         for f in files:
@@ -62,18 +63,21 @@ def availableModules():
             if os.path.isfile(ffull) \
                 and os.access(ffull, os.X_OK) \
                 and f[-1] != '~':
-                mods.append(f)
+                (status, output) = commands.getstatusoutput("%s name" % ffull)
+                if status:
+                    sys.stderr.write("The module '%s' is invalid\n" % f)
+                else:
+                    mods[f] = output
     else:
         sys.stderr.write("Directory '%s' does not exist\n" % MODS_AVAIL_PATH)
 
     return mods
 
 def show_avail_mods(args):
-    mods = availableModules()
-    sOut = "Available modules:[b]"
+    mods = get_available_modules()
+    sOut = "Available modules:"
     for m in mods:
-        sOut += " %s" % m
-    sOut += "[/]"
+        sOut += " [b]%s[/](%s)" % (m, mods[m])
     print(ColorCodes().applytags(sOut))
 
 if len(sys.argv) < 2:
