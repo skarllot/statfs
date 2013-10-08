@@ -27,7 +27,7 @@ import sys
 from common import *
 from colorcodes import ColorCodes
 
-PROG = sys.argv[0]
+PROG = os.path.basename(__file__)
 
 def show_help(args):
     help = """\
@@ -75,6 +75,12 @@ def show_avail_mods(args):
         sOut += " %s" % m
     sOut += "[/]"
     print(ColorCodes().applytags(sOut))
+
+if len(sys.argv) < 2:
+    sys.stderr.write("usage: %s <action>\n" % PROG)
+    sys.stderr.write(\
+        "%s: error: too few arguments (choose 'help' to show help)\n" % PROG)
+    sys.exit(1)
 
 parser = argparse.ArgumentParser(add_help=False)
 subparsers = parser.add_subparsers(title="Actions", metavar="")
