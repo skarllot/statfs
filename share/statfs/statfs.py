@@ -64,7 +64,7 @@ def availableModules():
                 and f[-1] != '~':
                 mods.append(f)
     else:
-        sys.stderr.write("Directory \"%s\" does not exist\n" % MODS_AVAIL_PATH)
+        sys.stderr.write("Directory '%s' does not exist\n" % MODS_AVAIL_PATH)
 
     return mods
 

@@ -50,7 +50,7 @@ else:
         STATFS_PATH = "%s/stats" % (ROOT_PATH)
         CONF_FILE = "%s/%s.conf" % (ETC_PATH, NAME)
     else:
-        sys.stderr.write("The file \"%s\" location is unsupported" % __file__)
+        sys.stderr.write("The file '%s' location is unsupported" % __file__)
         sys.exit(1)
 
 MODS_AVAIL_PATH = "%s/mods-available" % (ETC_PATH)
